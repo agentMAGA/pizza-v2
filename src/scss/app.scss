@@ -25,9 +25,15 @@ body {
   }
 
   &__items {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+    
+    @media (max-width:1500px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   &__top {
@@ -104,6 +110,10 @@ body {
         color: darken($color: #b6b6b6, $amount: 50);
       }
     }
+  }
+
+  .content__items{
+    display: flex;
   }
 
   &__item {
@@ -309,4 +319,6 @@ body {
       font-size: 18px;
     }
   }
+
+
 }

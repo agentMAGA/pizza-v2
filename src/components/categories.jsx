@@ -1,14 +1,11 @@
-
 import React from "react"
+import { usePizzaStore } from "../store/useCounterStore";
 
 function Categories() {
 
-    const [activeIndex, setActiveIndex] = React.useState(0);
+    const {activeIndex, setActiveIndex} = usePizzaStore();
     const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
-    const onClickCategory = (index) => {
-        setActiveIndex(index);
-    }
 
     return (
 
@@ -19,7 +16,7 @@ function Categories() {
                         .map((value, i) => (
                             <li key={i}
                                 className={activeIndex === i ? "active" : ""}
-                                onClick={() => onClickCategory(i)}
+                                onClick={() => setActiveIndex(i)}
                             >
                                 {value}
                             </li>
