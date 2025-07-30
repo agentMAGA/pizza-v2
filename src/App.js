@@ -8,11 +8,11 @@ import Cart from './pages/cart';
 
 function App() {
 
-  const {activeIndex , fetchPizza} = usePizzaStore();
+  const {activeIndex, activeSortCategory , fetchPizza , currentPage} = usePizzaStore();
 
   useEffect(() => {
     fetchPizza();
-  }, [activeIndex]);
+  }, [activeIndex,activeSortCategory,currentPage]);
 
 
   return (

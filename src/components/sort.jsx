@@ -1,12 +1,13 @@
 import React from "react";
+import { usePizzaStore } from "../store/useCounterStore";
 
 
 
 function Sort() {
 
   const [open, setOpen] = React.useState(false);
-  const [activeSort, setActiveSort] = React.useState(0);
-  const sort = ['популярности' , 'цене' , 'алфавиту'];
+  const {sort,activeSort, setActiveSortName,setActiveSortCategory} = usePizzaStore();
+  
 
   return (
     <div className="sort">
@@ -24,25 +25,27 @@ function Sort() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{sort[activeSort]}</span>
+        <span onClick={() => setOpen(!open)}>{sort[activeSort].name}</span>
       </div>
       {
         open &&
         (<div className="sort__popup">
           <ul>
           {
-            sort.map((name, i) => {
+            sort.map((obj, i) => {
               return (
                 <li key={i}
                   className={activeSort === i ? "active" : ""}
                   onClick={
                     () => { 
-                      setActiveSort(i); 
-                      setOpen(!open)}
+                      setActiveSortName(i);
+                      setOpen(!open);
+                      setActiveSortCategory(obj);
+                      }
                     } 
                   
                 >
-                  {name}
+                  {obj.name}
                 </li>
               )
             })

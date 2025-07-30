@@ -4,10 +4,11 @@ import PizzaBlock from '../components/pizzaBlock';
 import Sort from '../components/sort';
 import Categories from '../components/categories';
 import { usePizzaStore } from '../store/useCounterStore';
+import Pagination from '../components/Pagination/Pagination';
 
 function Home() {
 
-    const {pizza , isLoading} = usePizzaStore();
+    const {pizza , isLoading,currentPage ,setCurrentPage} = usePizzaStore();
 
     return (
         
@@ -28,6 +29,7 @@ function Home() {
               ))
             }
           </div>
+          <Pagination onChangePage={setCurrentPage} currentPage={currentPage}/>
         </div>
     )
 }
