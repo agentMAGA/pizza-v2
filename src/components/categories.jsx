@@ -1,10 +1,12 @@
 import React from "react"
-import { usePizzaStore } from "../store/useCounterStore";
+import { useSelector, useDispatch } from "react-redux";
+import {setCategoryId} from "../store/slices/filterSlice"
 
 function Categories() {
 
-    const {activeIndex, setActiveIndex} = usePizzaStore();
     const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
+    const filter = useSelector((state) => state.filter.categoryId)
+    const dispatch = useDispatch()
 
 
     return (
@@ -15,8 +17,8 @@ function Categories() {
                     categories
                         .map((value, i) => (
                             <li key={i}
-                                className={activeIndex === i ? "active" : ""}
-                                onClick={() => setActiveIndex(i)}
+                                className={filter === i ? "active" : ""}
+                                onClick={() => dispatch(setCategoryId(i))}
                             >
                                 {value}
                             </li>

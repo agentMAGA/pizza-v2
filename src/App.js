@@ -1,18 +1,63 @@
-import { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { Routes, Route , useNavigate } from 'react-router-dom';
 import '../src/scss/app.scss'
 import Header from './components/header';
-import { usePizzaStore } from './store/useCounterStore';
 import Home from './pages/home';
 import Cart from './pages/cart';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPizza } from './store/slices/pizzaSlice';
+import { setFilters } from './store/slices/filterSlice';
+import qs from 'qs';
+import { sortList } from './components/sort';
 
 function App() {
 
-  const {activeIndex, activeSortCategory , fetchPizza , currentPage} = usePizzaStore();
+  const dispatch = useDispatch();
+  const { categoryId, activeSort, currentPage } = useSelector((state) => state.filter);
+  const navigate = useNavigate();
+  const isSearch = useRef(false); // Ожидание пока сработает диспатч
+  const isMounted = useRef(false); // Проверка на первый рендер
 
+  // Проверяем параметры и отправляем в редукс
   useEffect(() => {
-    fetchPizza();
-  }, [activeIndex,activeSortCategory,currentPage]);
+    if (window.location.search) {
+    const params = qs.parse(window.location.search.substring(1));
+
+    const sort = sortList.find(obj => obj.sort === params.sortProperty);
+
+    dispatch(setFilters(
+      {
+        ...params,
+        sort,
+      }
+    ));
+      isSearch.current = true;
+    }
+  }, [dispatch]);
+
+  // Сшиваем параметры в строку
+  useEffect(() => {
+    if (isMounted.current) {
+    const queryString = qs.stringify({
+      sortProperty: activeSort.sort,
+      categoryId,
+      currentPage,
+    });
+
+      navigate(`?${queryString}`);
+    }
+    isMounted.current = true;
+  }, [ activeSort, categoryId, currentPage, navigate]);
+
+
+  // Запрос пицц
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (!isSearch.current) {
+      dispatch(fetchPizza({ categoryId, activeSort, currentPage }));
+    }
+    isSearch.current = false;
+  }, [dispatch, categoryId, activeSort, currentPage]);
 
 
   return (

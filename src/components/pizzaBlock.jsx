@@ -1,53 +1,69 @@
-import React from 'react'
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../store/slices/cartSlice';
 
+function PizzaBlock({ id, title, price, imageUrl, types, sizes }) {
+  const dispatch = useDispatch();
 
-function PizzaBlock(obj) {
-
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [activeType, setActiveType] = React.useState(0);
   const [activeSize, setActiveSize] = React.useState(0);
 
+  const typeNames = ['тонкая', 'традиционная'];
+
+  // Найти, сколько раз эта пицца уже в корзине
+  const cartItem = useSelector((state) =>
+    state.cart.items.find(
+      (item) =>
+        item.id === id &&
+        item.type === typeNames[activeType] &&
+        item.size === sizes[activeSize]
+    )
+  );
+  const addedCount = cartItem ? cartItem.count : 0;
+
+  const onClickAdd = () => {
+    const item = {
+      id,
+      title,
+      price,
+      imageUrl,
+      type: typeNames[activeType],
+      size: sizes[activeSize],
+    };
+    dispatch(addItem(item));
+  };
 
   return (
     <div className="pizza-block">
-      <img
-        className="pizza-block__image"
-        src={obj.imageUrl}
-        alt="Pizza"
-      />
-      <h4 className="pizza-block__title">{obj.title}</h4>
+      <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+      <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>
-          {
-            obj.types.map((type, i) => {
-              return (
-                <li key={i}
-                  className={activeIndex === i ? "active" : ""}
-                  onClick={() => { setActiveIndex(i) }}
-                >
-                  {type === 0 ? "тонкая" : "традиционная"}
-                </li>
-              )
-            })
-          }
+          {types.map((typeIndex) => (
+            <li
+              key={typeIndex}
+              className={activeType === typeIndex ? 'active' : ''}
+              onClick={() => setActiveType(typeIndex)}
+            >
+              {typeNames[typeIndex]}
+            </li>
+          ))}
         </ul>
         <ul>
-          {
-            obj.sizes.map((size, i) => {
-              return (
-                <li key={i}
-                  className={activeSize === i ? "active" : ""}
-                  onClick={() => { setActiveSize(i) }}
-                >
-                  {size} см.
-                </li>
-              )
-            })
-          }
+          {sizes.map((size, i) => (
+            <li
+              key={i}
+              className={activeSize === i ? 'active' : ''}
+              onClick={() => setActiveSize(i)}
+            >
+              {size} см.
+            </li>
+          ))}
         </ul>
       </div>
       <div className="pizza-block__bottom">
-        <div className="pizza-block__price">от {obj.price} ₽</div>
-        <div className="button button--outline button--add">
+        <div className="pizza-block__price">от {price} ₽</div>
+        <div className="button button--outline button--add" onClick={onClickAdd}>
           <svg
             width="12"
             height="12"
@@ -61,12 +77,11 @@ function PizzaBlock(obj) {
             />
           </svg>
           <span>Добавить</span>
-          <i>2</i>
+          {addedCount > 0 && <i>{addedCount}</i>}
         </div>
       </div>
     </div>
-  )
-
+  );
 }
 
 export default PizzaBlock;

@@ -1,16 +1,32 @@
-import React from "react";
-import { usePizzaStore } from "../store/useCounterStore";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSort } from "../store/slices/filterSlice";
 
-
+export const sortList = [
+  { name: "популярности", sort: "raiting" },
+  { name: "цене", sort: "price" },
+  { name: "алфавиту", sort: "title" },
+];
 
 function Sort() {
-
   const [open, setOpen] = React.useState(false);
-  const {sort,activeSort, setActiveSortName,setActiveSortCategory} = usePizzaStore();
-  
+  const dispatch = useDispatch();
+  const activeSort = useSelector((state) => state.filter.activeSort);
+  const sortRef = useRef();
+
+  // Закрытие popup при клике вне компонента
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sortRef.current && !sortRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.body.addEventListener("click", handleClickOutside);
+    return () => document.body.removeEventListener("click", handleClickOutside);
+  }, []);
 
   return (
-    <div className="sort">
+    <div className="sort" ref={sortRef}>
       <div className="sort__label">
         <svg
           width="10"
@@ -25,36 +41,30 @@ function Sort() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{sort[activeSort].name}</span>
+        <span onClick={() => setOpen(!open)}>{activeSort.name}</span>
       </div>
-      {
-        open &&
-        (<div className="sort__popup">
+      {open && (
+        <div className="sort__popup">
           <ul>
-          {
-            sort.map((obj, i) => {
+            {sortList.map((obj, i) => {
               return (
-                <li key={i}
-                  className={activeSort === i ? "active" : ""}
-                  onClick={
-                    () => { 
-                      setActiveSortName(i);
-                      setOpen(!open);
-                      setActiveSortCategory(obj);
-                      }
-                    } 
-                  
+                <li
+                  key={i}
+                  className={activeSort.sort === obj.sort ? "active" : ""}
+                  onClick={() => {
+                    dispatch(setSort(obj));
+                    setOpen(!open);
+                  }}
                 >
                   {obj.name}
                 </li>
-              )
-            })
-          }
+              );
+            })}
           </ul>
-        </div>)
-      }
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
 export default Sort;
