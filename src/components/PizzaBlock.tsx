@@ -1,8 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../store/slices/cartSlice';
+import { RootState } from '../store/store';
+import {TypePizzaBlock, TypeCartItem, CartItemType} from '../types/type'
 
-function PizzaBlock({ id, title, price, imageUrl, types, sizes }) {
+
+const PizzaBlock: React.FC<TypePizzaBlock> = ({ id, title, price, imageUrl, types, sizes }) => {
   const dispatch = useDispatch();
 
   const [activeType, setActiveType] = React.useState(0);
@@ -11,9 +14,9 @@ function PizzaBlock({ id, title, price, imageUrl, types, sizes }) {
   const typeNames = ['тонкая', 'традиционная'];
 
   // Найти, сколько раз эта пицца уже в корзине
-  const cartItem = useSelector((state) =>
+  const cartItem = useSelector((state: RootState) =>
     state.cart.items.find(
-      (item) =>
+      (item: TypeCartItem) =>
         item.id === id &&
         item.type === typeNames[activeType] &&
         item.size === sizes[activeSize]
@@ -22,13 +25,14 @@ function PizzaBlock({ id, title, price, imageUrl, types, sizes }) {
   const addedCount = cartItem ? cartItem.count : 0;
 
   const onClickAdd = () => {
-    const item = {
+    const item: CartItemType = {
       id,
       title,
       price,
       imageUrl,
       type: typeNames[activeType],
       size: sizes[activeSize],
+      count:0
     };
     dispatch(addItem(item));
   };
@@ -45,7 +49,7 @@ function PizzaBlock({ id, title, price, imageUrl, types, sizes }) {
               className={activeType === typeIndex ? 'active' : ''}
               onClick={() => setActiveType(typeIndex)}
             >
-              {typeNames[typeIndex]}
+              {typeNames[typeIndex] ?? 'Неизвестный тип'}
             </li>
           ))}
         </ul>
@@ -56,7 +60,7 @@ function PizzaBlock({ id, title, price, imageUrl, types, sizes }) {
               className={activeSize === i ? 'active' : ''}
               onClick={() => setActiveSize(i)}
             >
-              {size} см.
+              {size ?? 'Неизвестный размер'} см.
             </li>
           ))}
         </ul>

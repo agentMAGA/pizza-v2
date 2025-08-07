@@ -1,12 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
+import { TypeItem } from '../types/type';
 
-function Header(){
 
-    const { totalPrice, items } = useSelector(state => state.cart)
+const Header: React.FC = () => {
 
-    const totalCount = items.reduce((sum, item) => sum + item.count, 0);
+    const { totalPrice, items } = useSelector((state: RootState) => state.cart)
+
+    const totalCount = items.reduce((sum: number, item: TypeItem) => sum + item.count, 0);
     
 
     return(

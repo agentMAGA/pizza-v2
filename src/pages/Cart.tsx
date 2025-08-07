@@ -1,14 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import CardItem from "../components/cardItem";
+import CardItem from "../components/CardItem.tsx";
 import { useSelector, useDispatch } from "react-redux";
-import { clearItems} from "../store/slices/cartSlice";
-import CartEmpty from "../components/cardEmpty";
+import { clearItems} from "../store/slices/cartSlice.ts";
+import CartEmpty from "../components/CardEmpty.tsx";
+import { RootState } from "../store/store.ts";
+import { CartItemType, TypeItem } from "../types/type.ts";
+
 
 function Cart() {
   const dispatch = useDispatch()
-  const { items, totalPrice } = useSelector(state => state.cart)
-  const totalCount = items.reduce((sum, item) => sum + item.count, 0)
+  const { items, totalPrice } = useSelector((state: RootState) => state.cart)
+  const totalCount = items.reduce((sum: number, item: TypeItem) => sum + item.count, 0)
 
   const onClickClear = () => {
     dispatch(clearItems())
@@ -98,8 +101,8 @@ function Cart() {
         <div className="content__items">
           {items
               .slice() // копируем массив, чтобы не мутировать оригинальный
-              .sort((a, b) => a.id - b.id)
-            .map(item => (
+              .sort((a, b) => Number(a.id) - Number(b.id))
+            .map((item: CartItemType) => (
               <CardItem key={item.id} {...item} />
             ))}
         </div>

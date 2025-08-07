@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { CartItemType } from '../../types/type';
+import { TypeItems } from '../../types/typeStore';
 
-const initialState = {
+const initialState: TypeItems = {
   totalPrice: 0,
   items: [],
 }
 
-const calcTotalPrice = (items) => {
-  return items.reduce((sum, item) => sum + item.price * item.count, 0);
+const calcTotalPrice = (items: CartItemType[]) => {
+  return items.reduce((sum: number, item: CartItemType) => sum + item.price * item.count, 0);
 };
 
 export const cartSlice = createSlice({
@@ -14,10 +16,10 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, action) => {
-      const item = action.payload;
+      const item: CartItemType = action.payload;
 
       const foundItem = state.items.find(
-        ((i) => i.id === item.id && i.type === item.type && i.size === item.size)
+        (i: CartItemType) => i.id === item.id && i.type === item.type && i.size === item.size
       );
 
       if (foundItem) {
@@ -33,7 +35,7 @@ export const cartSlice = createSlice({
       const { id, type, size } = action.payload;
 
       state.items = state.items.filter(
-        (item) => !(item.id === id && item.type === type && item.size === size)
+        (item: CartItemType) => !(item.id === id && item.type === type && item.size === size)
       );
 
       state.totalPrice = calcTotalPrice(state.items);
@@ -50,7 +52,7 @@ export const cartSlice = createSlice({
         foundItem.count--;
         if (foundItem.count <= 0) {
           state.items = state.items.filter(
-            (item) => !(item.id === id && item.type === type && item.size === size)
+            (item: CartItemType) => !(item.id === id && item.type === type && item.size === size)
           );
         }
       }

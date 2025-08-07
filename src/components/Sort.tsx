@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSort } from "../store/slices/filterSlice";
+import { RootState } from "../store/store";
+import {TypeSort} from "../types/type"
 
-export const sortList = [
+export const sortList: TypeSort[] = [
   { name: "популярности", sort: "raiting" },
   { name: "цене", sort: "price" },
   { name: "алфавиту", sort: "title" },
@@ -11,18 +13,23 @@ export const sortList = [
 function Sort() {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
-  const activeSort = useSelector((state) => state.filter.activeSort);
-  const sortRef = useRef();
+  const activeSort = useSelector((state: RootState) => state.filter.activeSort);
+  const sortRef = useRef<HTMLDivElement>(null);
 
   // Закрытие popup при клике вне компонента
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sortRef.current && !sortRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Проверка на null + приведение к типу
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     };
+  
     document.body.addEventListener("click", handleClickOutside);
-    return () => document.body.removeEventListener("click", handleClickOutside);
+  
+    return () => {
+      document.body.removeEventListener("click", handleClickOutside);
+    };
   }, []);
 
   return (

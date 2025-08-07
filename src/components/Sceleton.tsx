@@ -1,7 +1,7 @@
 import React from "react"
 import ContentLoader from "react-content-loader"
 
-function Sceleton(obj) {
+const Sceleton: React.FC = (obj) => {
 
     return (
         <ContentLoader
@@ -22,6 +22,6 @@ function Sceleton(obj) {
     </ContentLoader >
     )
 
-}
+};
 
 export default Sceleton;
